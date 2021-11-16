@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-      <script src="https://miro.com/app/static/sdk.1.1.js"></script>
-      <script>
+    <script src="https://miro.com/app/static/sdk.1.1.js"></script>
+    <script>
       miro.onReady(() => {
         miro.initialize({
           extensionPoints: {
@@ -10,12 +10,52 @@
               title: 'Some title',
               svgIcon: '<circle cx="12" cy="12" r="9" fill="none" fill-rule="evenodd" stroke="currentColor" stroke-width="2"/>',
               onClick: () => {
-                alert('Hi!')
+                alert('Hello World!');
               }
             }
           }
         })
       })
-      </script>
+
+      function tally() {
+        const planningPokerAppId = '3074457347007443177';
+        let widgets = await miro.board.widgets.get('url');
+        let cards = widgets.filter(w => Object.keys(w.metadata).find(key => key === planningPokerAppId));
+
+        let values = cards.map(c => c.metadata[planningPokerAppId].value);
+      }
+    </script>
   </head>
+  <body>
+    <div id="box" style="background: red; width: 50px; height: 50px;"></div>
+    <script>
+      async function createWidget(canvasX, canvasY) {
+        const widget = (await miro.board.widgets.create({
+          type: "sticker",
+          text: "some text",
+          x:canvasX || 0,
+          y:canvasY || 0
+        }))[0]
+        miro.board.viewport.zoomToObject(widget)
+      }
+
+      const options = {
+        draggableItemSelector: '#box',
+        onClick: async (targetElement) => {
+          createWidget()
+        },
+        getDraggableItemPreview: (targetElement) => { //drag-started
+          return {url: HOTSPOT_PREVIEW}
+        },
+        onDrop: (canvasX, canvasY) => {
+          createWidget(canvasX, canvasY)
+        }
+      }
+
+      miro.onReady(() => {
+        miro.board.ui.initDraggableItemsContainer(document.body, options)  
+      })
+
+    </script>
+  </body>
 </html>
