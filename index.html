@@ -16,14 +16,6 @@
           }
         })
       })
-
-      function tally() {
-        const planningPokerAppId = '3074457347007443177';
-        let widgets = await miro.board.widgets.get('url');
-        let cards = widgets.filter(w => Object.keys(w.metadata).find(key => key === planningPokerAppId));
-
-        let values = cards.map(c => c.metadata[planningPokerAppId].value);
-      }
     </script>
   </head>
   <body>
